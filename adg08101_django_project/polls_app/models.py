@@ -22,5 +22,5 @@ class Choice(models.Model):
 
 class Note(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    note = models.CharField(max_length=150)
+    note_text = models.CharField(max_length=150)
     pub_date = models.DateTimeField('date published')
