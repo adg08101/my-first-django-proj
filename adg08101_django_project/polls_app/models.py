@@ -3,9 +3,15 @@ from django.utils import timezone
 import datetime
 
 
+class Language(models.Model):
+    language_text = models.CharField(max_length=150)
+    pub_date = models.DateTimeField('date created')
+
+
 class Question(models.Model):
-    question_text = models.CharField(max_length=200)
+    question_text = models.CharField(max_length=250)
     pub_date = models.DateTimeField('date published')
+    language = models.ForeignKey(Language, default=None, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"The question id is {self.id} with {self.question_text} text and added on {self.pub_date}"
@@ -20,7 +26,7 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
 
-class Note(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    note_text = models.CharField(max_length=150)
+class QuestionType(models.Model):
+    question = models.ManyToManyField(Question)
+    type_text = models.CharField(max_length=150)
     pub_date = models.DateTimeField('date published')
