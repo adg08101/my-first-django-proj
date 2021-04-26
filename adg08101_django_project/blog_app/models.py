@@ -27,6 +27,7 @@ class Entry(models.Model):
     number_of_comments = models.IntegerField()
     number_of_pingbacks = models.IntegerField()
     rating = models.IntegerField()
+    data = models.JSONField(null=True, default=None)
 
     def __str__(self):
         return self.headline
