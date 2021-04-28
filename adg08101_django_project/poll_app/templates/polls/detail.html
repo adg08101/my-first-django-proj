@@ -1,73 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls details
+{% endblock %}
+{% block 'content' %}
 {% if question %}
-<table>
-    <thead>
-    <tr>
-        <td>
-            Back
-        </td>
-        <td>
-            Question id
-        </td>
-        <td>
-            Question text
-        </td>
-        <td>
-            Pub date
-        </td>
-        <td>
-            Language
-        </td>
-        <td>
-            Type
-        </td>
-        <td>
-            Choice
-        </td>
-        <td>
-            Extra
-        </td>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <a href="/polls">
-                Back
-            </a>
-        </td>
-        <td>
-            {{ question.id }}
-        </td>
-        <td>
-            {{ question.question_text }}
-        </td>
-        <td>
-            {{ question.pub_date }}
-        </td>
-        <td>
-            {{ question.language }}
-        </td>
-        <td>
-            {{ question.type }}
-        </td>
-        <td>
-            {{ question.choice }}
-        </td>
-        <td>
-            {{ question.extra }}
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="datagrid">
+    <table>
+        <thead>
+        <tr>
+            <th>Question id</th>
+            <th>Question text</th>
+            <th>Question pub date</th>
+            <th>Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ question.id }}</td>
+            <td>{{ question.question_text }}</td>
+            <td>{{ question.pub_date }}</td>
+            <td>Update | Delete</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
 {% else %}
 <p>No details are available. {{ question }}</p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

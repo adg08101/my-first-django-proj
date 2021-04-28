@@ -1,73 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-
-    </style>
-    {% load static %}
-    <script src="{% static 'js/vue.js' %}"></script>
-    <script src="{% static 'js/scripts/app.js' %}"></script>
-    <link type="text/css" rel="stylesheet" href="{% static 'styles/main_styles.css' %}">
-</head>
-<body>
-<div id="app">
-    {% if latest_question_list %}
-    <div class="datagrid">
-        <table>
-            <thead>
-            <tr>
-                <th>No.</th>
-                <th>Question id</th>
-                <th>Question text</th>
-                <th>Question pub date</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for question in latest_question_list %}
-            <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
-                <td>
-                    {{ forloop.counter }}
-                </td>
-                <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
-                <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
-                <td>{{ question.pub_date }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p>No polls are available.</p>
-    {% endif %}
-
-    {% if questions %}
-    <div class="datagrid">
-        <table>
-            <thead>
-            <tr>
-                <th>No.</th>
-                <th>Question id</th>
-                <th>Question text</th>
-                <th>Question pub date</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for question in questions %}
-            <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
-                <td>{{ forloop.counter }}</td>
-                <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
-                <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
-                <td>{{ question.pub_date }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p>No polls are available.</p>
-    {% endif %}
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls details
+{% endblock %}
+{% block 'content' %}
+{% if latest_question_list %}
+<div class="datagrid">
+    <table>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Question id</th>
+            <th>Question text</th>
+            <th>Question pub date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for question in latest_question_list %}
+        <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
+            <td>
+                {{ forloop.counter }}
+            </td>
+            <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
+            <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
+            <td>{{ question.pub_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
-</body>
-</html>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}
+
+{% if questions %}
+<div class="datagrid">
+    <table>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Question id</th>
+            <th>Question text</th>
+            <th>Question pub date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+        <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
+            <td>{{ forloop.counter }}</td>
+            <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
+            <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
+            <td>{{ question.pub_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}
+{% endblock %}
