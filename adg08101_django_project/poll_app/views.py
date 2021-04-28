@@ -7,25 +7,7 @@ from django.template import loader
 def index(request, desde='main'):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     template = loader.get_template('polls/index.html')
-
     questions = Question.objects.all()
-    for i, q in enumerate(questions):
-        if i % 2 == 0:
-            q.extra = True
-            q.save()
-        else:
-            q.extra = False
-            q.save()
-    questions = Question.objects.all()
-
-    for i, q in enumerate(latest_question_list):
-        if i % 2 == 0:
-            q.extra = True
-            q.save()
-        else:
-            q.extra = False
-            q.save()
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
 
     context = {
         'latest_question_list': latest_question_list,
@@ -41,7 +23,6 @@ def detail(request, question_id):
     context = {
         'question': question,
     }
-    print(context)
     return HttpResponse(template.render(context, request))
 
 
@@ -58,3 +39,9 @@ def results(request, question_id, year, bla, theme):
 
 def vote(request, question_id=1, month_id=1):
     return HttpResponse(f"You're voting on question {question_id} for month {month_id}")
+
+def delete(request, question_id):
+    q = Question.objects.get(pk = question_id)
+    q.delete()
+    template = loader.get_template('polls/delete.html')
+    return HttpResponse(template.render(request=request))

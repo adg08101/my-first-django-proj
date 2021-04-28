@@ -1,13 +1,12 @@
 {% extends "polls/base.html" %}
 {% block 'title' %}
-Polls details {{ question.id }}
+Poll deleted {{ question.id }}
 {% endblock %}
 {% block 'back' %}
-{% include "polls/back.html" %}
+{% include "polls/main.html" %}
 {% endblock %}
 {% block 'content' %}
-{% if question %}
-<div class="datagrid">
+<!--<div class="datagrid">
     <table>
         <thead>
         <tr>
@@ -27,8 +26,5 @@ Polls details {{ question.id }}
         </tbody>
     </table>
 </div>
-</div>
-{% else %}
-<p>No details are available. {{ question }}</p>
-{% endif %}
+</div>-->
 {% endblock %}

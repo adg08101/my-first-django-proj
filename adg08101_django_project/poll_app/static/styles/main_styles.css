@@ -14,3 +14,4 @@
         .alt td { background: #E1EEf4; color: #00557F; }
         .datagrid table tbody td:first-child { border-left: none; }
         .datagrid table tbody tr:last-child td { border-bottom: none; }
+        .back { max-width: fit-content !important; cursor: pointer }

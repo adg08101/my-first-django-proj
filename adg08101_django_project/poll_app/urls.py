@@ -19,6 +19,7 @@ urlpatterns = [
     path('<int:question_id>/', include(
         [
             path('', views.detail, name='detail'),
+            path('delete', views.delete, name='delete'),
             path('/<20yy:year>/<slug:bla>/results', views.results, name='results20'),
             path('/<21yy:year>/<slug:bla>/results', views.results, {'theme': 'customized'}, name='results21'),
         ]

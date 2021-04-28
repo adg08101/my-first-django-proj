@@ -1,14 +1,17 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block 'title'%}{% endblock %}</title>
-    {% load static %}
     <script src="{% static 'js/vue.js' %}"></script>
     <script src="{% static 'js/scripts/app.js' %}"></script>
     <link type="text/css" rel="stylesheet" href="{% static 'styles/main_styles.css' %}">
 </head>
 <body>
-{% block 'content'%}{% endblock %}
+<div id="app">
+    {% block 'back' %}{% endblock %}
+    {% block 'content'%}{% endblock %}
+</div>
 </body>
 </html>
