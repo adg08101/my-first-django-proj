@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('', include('main_app.urls')),
     path('admin/', admin.site.urls),
-    path('', include('poll_app.urls')),
-    path('main', include('main_app.urls')),
-    path('manage/', include('admin_app.urls'))
+    path('polls/', include('poll_app.urls')),
+    path('manage/', include('admin_app.urls')),
+    path('author-polls/', include(('poll_app.urls', 'author-polls'), namespace='author-polls')),
+    path('publisher-polls/', include(('poll_app.urls', 'publisher-polls'), namespace='publisher-polls')),
 ]

@@ -33,6 +33,7 @@ class Question(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     type = models.ManyToManyField(QuestionType)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    extra = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return f"{self.question_text} " + datetime.datetime.strftime(self.pub_date, '%b %d, %Y')
