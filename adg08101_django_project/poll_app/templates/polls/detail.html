@@ -22,7 +22,7 @@ Polls details {{ question.id }}
             <td>{{ question.id }}</td>
             <td>{{ question.question_text }}</td>
             <td>{{ question.pub_date }}</td>
-            <td>Update | <a href="../{{ question.id }}/delete">Delete</a></td>
+            <td>Update | <a href="{% url 'polls:delete' question.id %}">Delete</a></td>
         </tr>
         </tbody>
     </table>

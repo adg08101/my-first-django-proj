@@ -1,0 +1,48 @@
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls Detailed {{ question.id }}
+{% endblock %}
+{% block 'back' %}
+{% include "polls/back.html" %}
+{% endblock %}
+{% block 'content' %}
+{% if question %}
+
+<div class="datagrid back">
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+        <table>
+            <thead>
+            <tr>
+                <th>{{ question.question_text }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    {% csrf_token %}
+                    {% if question.choice.all %}
+                    {% for choice in question.choice.all %}
+                    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                    {% endfor %}
+                    {% else %}
+                    No choices are available
+                    {% endif %}
+                </td>
+            </tr>
+            {% if question.choice.all %}
+            <tr class="alt">
+                <td>
+                    <input type="submit" value="Vote">
+                </td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </form>
+</div>
+</div>
+{% else %}
+<p>No question is available</p>
+{% endif %}
+{% endblock %}

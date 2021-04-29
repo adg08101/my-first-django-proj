@@ -1,7 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, Http404
 from .models import Question
 from django.template import loader
+import requests
 
 
 def index(request, desde='main'):
@@ -25,6 +26,14 @@ def detail(request, question_id):
     }
     return HttpResponse(template.render(context, request))
 
+def details(request, question_id):
+    question = Question.objects.get(id=question_id)
+    template = loader.get_template('polls/details.html')
+    context = {
+        'question': question,
+    }
+    return HttpResponse(template.render(context, request))
+
 
 def results(request, question_id, year, bla, theme):
     if year < 2000:
@@ -37,11 +46,15 @@ def results(request, question_id, year, bla, theme):
     return HttpResponse(response)
 
 
-def vote(request, question_id=1, month_id=1):
-    return HttpResponse(f"You're voting on question {question_id} for month {month_id}")
+def vote(request, question_id=1):
+    print(request.POST)
+    return HttpResponse(f"You're voting on question {question_id} for choice")
 
 def delete(request, question_id):
-    q = Question.objects.get(pk = question_id)
-    q.delete()
-    template = loader.get_template('polls/delete.html')
-    return HttpResponse(template.render(request=request))
+    try:
+        q = get_object_or_404(Question, pk=question_id)
+        q.delete()
+        template = loader.get_template('polls/delete.html')
+        return HttpResponse(template.render(request=request))
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")

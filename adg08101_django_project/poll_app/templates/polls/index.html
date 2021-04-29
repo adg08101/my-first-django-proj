@@ -2,6 +2,9 @@
 {% block 'title' %}
 Polls Main View
 {% endblock %}
+{% block 'back' %}
+{% include "polls/admin.html" %}
+{% endblock %}
 {% block 'content' %}
 {% if latest_question_list %}
 <div class="datagrid">
@@ -20,8 +23,8 @@ Polls Main View
             <td>
                 {{ forloop.counter }}
             </td>
-            <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
-            <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
+            <td><a href="{% url 'polls:details' question.id %}">{{ question.id }}</a></td>
+            <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
             <td>{{ question.pub_date }}</td>
         </tr>
         {% endfor %}
@@ -47,8 +50,8 @@ Polls Main View
         {% for question in questions %}
         <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
             <td>{{ forloop.counter }}</td>
-            <td><a href="/polls/{{ question.id }}/">{{ question.id }}</a></td>
-            <td><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></td>
+            <td><a href="{% url 'polls:details' question.id %}">{{ question.id }}</a></td>
+            <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
             <td>{{ question.pub_date }}</td>
         </tr>
         {% endfor %}
