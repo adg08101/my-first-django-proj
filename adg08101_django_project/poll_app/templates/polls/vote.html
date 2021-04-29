@@ -1,0 +1,30 @@
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls details {{ question.id }}
+{% endblock %}
+{% block 'back' %}
+{% include "polls/main.html" %}
+{% endblock %}
+{% block 'content' %}
+{% if question %}
+<div class="datagrid back">
+    <table>
+        <thead>
+        <tr>
+            <th>Question text</th>
+            <th>Answer text</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ question.question_text }}</td>
+            <td>{{ choice.choice_text }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+{% else %}
+<p>No vote are available</p>
+{% endif %}
+{% endblock %}

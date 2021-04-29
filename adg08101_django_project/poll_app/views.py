@@ -1,18 +1,26 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
-from .models import Question
+from .models import Question, Choice, QuestionChoiceVote
+from django.db.models import F
 from django.template import loader
 import requests
 
 
 def index(request, desde='main'):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    template = loader.get_template('polls/index.html')
     questions = Question.objects.all()
+    questions_with_choices = []
+
+    for q in questions:
+        if q.choice.count() > 0:
+            questions_with_choices.append(q)
+
+    template = loader.get_template('polls/index.html')
 
     context = {
         'latest_question_list': latest_question_list,
         'questions': questions,
+        'questions_with_choices': questions_with_choices,
     }
     return HttpResponse(template.render(context, request))
 
@@ -46,9 +54,24 @@ def results(request, question_id, year, bla, theme):
     return HttpResponse(response)
 
 
-def vote(request, question_id=1):
-    print(request.POST)
-    return HttpResponse(f"You're voting on question {question_id} for choice")
+def vote(request, question_id):
+    try:
+        template = loader.get_template('polls/vote.html')
+        q = Question.objects.get(pk = question_id)
+        c = Choice.objects.get(pk = request.POST['choice'])
+        rel = QuestionChoiceVote.objects.filter(question = q, choice = c)
+        context = {
+            'question': q,
+            'choice': c,
+        }
+        if rel.count() > 0:
+            QuestionChoiceVote.objects.filter(question = q, choice = c).update(votes = F('votes') + 1)
+        else:
+            QuestionChoiceVote.objects.create(question = q, choice = c, votes = 1)
+    except:
+        raise Http404("Object does not exist")
+
+    return HttpResponse(template.render(request=request, context=context))
 
 def delete(request, question_id):
     try:
