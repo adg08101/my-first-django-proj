@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404
-from .models import Question, Choice, QuestionChoiceVote
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.urls import reverse
+from .models import *
 from django.db.models import F
 from django.template import loader
 import requests
 
-
-def index(request, desde='main'):
+def getContext(message=None):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     questions = Question.objects.all()
     questions_with_choices = []
@@ -15,14 +15,22 @@ def index(request, desde='main'):
         if q.choice.count() > 0:
             questions_with_choices.append(q)
 
-    template = loader.get_template('polls/index.html')
-
     context = {
         'latest_question_list': latest_question_list,
         'questions': questions,
         'questions_with_choices': questions_with_choices,
+        'message': message,
     }
-    return HttpResponse(template.render(context, request))
+    return context
+
+def index(request):
+    try:
+        template = loader.get_template('polls/index.html')
+        context = getContext()
+        return HttpResponse(template.render(context, request))
+    finally:
+        if 'message' in request.session:
+            del request.session['message']
 
 
 # Create your views here.
@@ -33,6 +41,21 @@ def detail(request, question_id):
         'question': question,
     }
     return HttpResponse(template.render(context, request))
+
+
+def new(request):
+    # question = Question.objects.get(id=question_id)
+    languages = Language.objects.all()
+    types = QuestionType.objects.all()
+    choices = Choice.objects.all()
+    template = loader.get_template('polls/new.html')
+    context = {
+        'languages': languages,
+        'types': types,
+        'choices': choices,
+    }
+    return HttpResponse(template.render(context, request))
+
 
 def details(request, question_id):
     question = Question.objects.get(id=question_id)
@@ -77,7 +100,9 @@ def delete(request, question_id):
     try:
         q = get_object_or_404(Question, pk=question_id)
         q.delete()
-        template = loader.get_template('polls/delete.html')
-        return HttpResponse(template.render(request=request))
     except Question.DoesNotExist:
         raise Http404("Question does not exist")
+    finally:
+        request.session['message'] = 'Question deleted'
+        template = loader.get_template('polls/index.html')
+        return HttpResponseRedirect(reverse('polls:index'))

@@ -11,11 +11,9 @@ extra = [
 
 app_name = 'polls'
 urlpatterns = [
-    # path('', views.IndexView.as_view(), name='index'),
     path('', views.index, name='index'),
-    # path('<int:pk>/', views.DetailView.as_view(), name='detail'),
-    # re_path(r'(?P<month_id>[0, 1]{1}[0, 1, 2]{1})(?P<question_id>[0-9]{2})/vote', views.vote, name='vote'),
     path('atras/', include(extra)),
+    path('new', views.new, name='new'),
     path('<int:question_id>/', include(
         [
             path('', views.detail, name='detail'),
@@ -27,5 +25,3 @@ urlpatterns = [
         ]
     )),
 ]
-# , 'polls'
-# )

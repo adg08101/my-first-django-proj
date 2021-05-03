@@ -10,6 +10,10 @@ Polls Main View
 
 {% if questions_with_choices %}
 <div class="datagrid">
+    {% if 'message' in request.session %}
+    <strong>{{ request.session.message }}</strong>
+    <br>
+    {% endif %}
     <strong>Questions with choices</strong>
     <table>
         <thead>

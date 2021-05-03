@@ -1,0 +1,81 @@
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls details {{ question.id }}
+{% endblock %}
+{% block 'back' %}
+{% include "polls/back.html" %}
+{% endblock %}
+{% block 'content' %}
+<div class="datagrid back">
+    <table>
+        <thead>
+        <tr>
+            <th>Question Text</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <textarea name="text"></textarea>
+            </td>
+            <td><input type="date" name="date"></td>
+            <td><input type="time" name="time"></td>
+        </tr>
+        </tbody>
+        <thead>
+        <tr>
+            <th>Language</th>
+            <th>Type</th>
+            <th>Choices</th>
+        </tr>
+        </thead>
+        <tbody>
+        <td>
+            {% csrf_token %}
+            {% if languages %}
+            {% for lang in languages %}
+            <input type="radio" name="lang" id="choice{{ forloop.counter }}" value="{{ lang.id }}">
+            <label for="lang{{ forloop.counter }}">{{ lang.language_text }}</label><br>
+            {% endfor %}
+            {% else %}
+            No languages are available
+            {% endif %}
+        </td>
+        <td>
+            {% csrf_token %}
+            {% if types %}
+            {% for type in types %}
+            <input type="radio" name="type" id="type{{ forloop.counter }}" value="{{ type.id }}">
+            <label for="type{{ forloop.counter }}">{{ type.type_text }}</label><br>
+            {% endfor %}
+            {% else %}
+            No types are available
+            {% endif %}
+        </td>
+        <td>
+            {% csrf_token %}
+            {% if choices %}
+            {% for choice in choices %}
+            <input type="checkbox" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            {% endfor %}
+            {% else %}
+            No choices are available
+            {% endif %}
+        </td>
+        <tr class="alt">
+            <td>
+                <input type="submit" value="Add">
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
