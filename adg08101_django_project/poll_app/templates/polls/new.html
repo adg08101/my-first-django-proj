@@ -6,13 +6,13 @@ Polls details {{ question.id }}
 {% include "polls/back.html" %}
 {% endblock %}
 {% block 'content' %}
+<form action="{% url 'polls:add' %}" method="post">
 <div class="datagrid back">
     <table>
         <thead>
         <tr>
             <th>Question Text</th>
-            <th>Date</th>
-            <th>Time</th>
+            <th colspan="2">Date</th>
         </tr>
         </thead>
         <tbody>
@@ -20,8 +20,7 @@ Polls details {{ question.id }}
             <td>
                 <textarea name="text"></textarea>
             </td>
-            <td><input type="date" name="date"></td>
-            <td><input type="time" name="time"></td>
+            <td colspan="2"><input type="datetime-local" name="date"></td>
         </tr>
         </tbody>
         <thead>
@@ -57,10 +56,13 @@ Polls details {{ question.id }}
         <td>
             {% csrf_token %}
             {% if choices %}
-            {% for choice in choices %}
-            <input type="checkbox" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-            {% endfor %}
+            <select id="choices" name="choices[]" multiple size="2">
+                {% for choice in choices %}
+                <option value="{{ choice.id }}">
+                    {{ choice.choice_text }}
+                </option>
+                {% endfor %}
+            </select>
             {% else %}
             No choices are available
             {% endif %}
@@ -78,4 +80,5 @@ Polls details {{ question.id }}
     </table>
 </div>
 </div>
+</form>
 {% endblock %}

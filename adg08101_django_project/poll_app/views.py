@@ -4,7 +4,7 @@ from django.urls import reverse
 from .models import *
 from django.db.models import F
 from django.template import loader
-import requests
+import requests, datetime
 
 def getContext(message=None):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -22,6 +22,7 @@ def getContext(message=None):
         'message': message,
     }
     return context
+
 
 def index(request):
     try:
@@ -66,6 +67,28 @@ def details(request, question_id):
     return HttpResponse(template.render(context, request))
 
 
+def add(request):
+    l = request.POST.getlist('choices[]')
+
+    q = Question(question_text=request.POST['text'],
+                    pub_date=datetime.datetime.strptime(request.POST['date'], '%Y-%m-%dT%H:%M'),
+                    language=Language.objects.get(pk=request.POST['lang']),
+                    extra=None)
+
+    # q.language = Language.objects.get(pk=request.POST['lang'])
+
+    q.save()
+
+    q.type.add(QuestionType.objects.get(pk=request.POST['type']))
+
+    for i in l:
+        q.choice.add(Choice.objects.get(pk = i))
+
+    q.save()
+
+    return HttpResponse(l)
+
+
 def results(request, question_id, year, bla, theme):
     if year < 2000:
         century = '20th'
@@ -80,21 +103,22 @@ def results(request, question_id, year, bla, theme):
 def vote(request, question_id):
     try:
         template = loader.get_template('polls/vote.html')
-        q = Question.objects.get(pk = question_id)
-        c = Choice.objects.get(pk = request.POST['choice'])
-        rel = QuestionChoiceVote.objects.filter(question = q, choice = c)
+        q = Question.objects.get(pk=question_id)
+        c = Choice.objects.get(pk=request.POST['choice'])
+        rel = QuestionChoiceVote.objects.filter(question=q, choice=c)
         context = {
             'question': q,
             'choice': c,
         }
         if rel.count() > 0:
-            QuestionChoiceVote.objects.filter(question = q, choice = c).update(votes = F('votes') + 1)
+            QuestionChoiceVote.objects.filter(question=q, choice=c).update(votes=F('votes') + 1)
         else:
-            QuestionChoiceVote.objects.create(question = q, choice = c, votes = 1)
+            QuestionChoiceVote.objects.create(question=q, choice=c, votes=1)
     except:
         raise Http404("Object does not exist")
 
     return HttpResponse(template.render(request=request, context=context))
+
 
 def delete(request, question_id):
     try:

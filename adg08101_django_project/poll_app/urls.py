@@ -12,6 +12,7 @@ extra = [
 app_name = 'polls'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('add', views.add, name='add'),
     path('atras/', include(extra)),
     path('new', views.new, name='new'),
     path('<int:question_id>/', include(
