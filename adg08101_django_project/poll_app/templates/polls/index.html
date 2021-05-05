@@ -8,6 +8,9 @@ Polls Main View
 {% block 'new' %}
 {% include "polls/add.html" %}
 {% endblock %}
+{% block 'results' %}
+{% include "polls/result.html" %}
+{% endblock %}
 {% block 'content' %}
 {% if latest_question_list %}
 

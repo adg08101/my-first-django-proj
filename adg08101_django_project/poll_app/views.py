@@ -84,7 +84,9 @@ def add(request):
 
     q.save()
 
-    return HttpResponse(l)
+    request.session['message'] = 'Question added'
+    template = loader.get_template('polls/index.html')
+    return HttpResponseRedirect(reverse('polls:index'))
 
 
 def results(request, question_id, year, bla, theme):
@@ -96,6 +98,15 @@ def results(request, question_id, year, bla, theme):
     response = f"You're looking at the results of question {question_id} for year {year} on {century}" \
                f"century says {bla}. for {theme} theme"
     return HttpResponse(response)
+
+
+def questions_results(request):
+    question_choices_votes = QuestionChoiceVote.objects.all()
+    template = loader.get_template('polls/results.html')
+    context = {
+        'results': question_choices_votes,
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def vote(request, question_id):

@@ -35,7 +35,7 @@ class Question(models.Model):
     extra = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return f"{self.question_text} " + datetime.datetime.strftime(self.pub_date, '%b %d, %Y')
+        return f"{self.question_text}"
 
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)

@@ -5,15 +5,15 @@ from . import views, yearConverter
 register_converter(yearConverter.FourDigitYearConverter20Century, '20yy')
 register_converter(yearConverter.FourDigitYearConverter21Century, '21yy')
 
-extra = [
-    path('goback/<str:desde>', views.index, name='goback'),
+results = [
+    path('', views.questions_results, name='results'),
 ]
 
 app_name = 'polls'
 urlpatterns = [
     path('', views.index, name='index'),
     path('add', views.add, name='add'),
-    path('atras/', include(extra)),
+    path('results', include(results)),
     path('new', views.new, name='new'),
     path('<int:question_id>/', include(
         [

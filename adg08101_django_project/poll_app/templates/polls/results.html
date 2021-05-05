@@ -1,0 +1,36 @@
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls details {{ question.id }}
+{% endblock %}
+{% block 'back' %}
+{% include "polls/back.html" %}
+{% endblock %}
+{% block 'content' %}
+{% if results %}
+<div class="datagrid">
+    <table>
+        <thead>
+        <tr>
+            <th>Question id</th>
+            <th>Question text</th>
+            <th>Answer text</th>
+            <th>Votes</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in results  %}
+        <tr onclick="styled('{{ r.question.id }}')">
+            <td>{{ r.question.id }}</td>
+            <td>{{ r.question.question_text }}</td>
+            <td>{{ r.choice.choice_text }}</td>
+            <td>{{ r.votes }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+{% else %}
+<p>No details are available. {{ question }}</p>
+{% endif %}
+{% endblock %}
