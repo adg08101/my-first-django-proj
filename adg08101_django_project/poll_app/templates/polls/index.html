@@ -5,6 +5,9 @@ Polls Main View
 {% block 'back' %}
 {% include "polls/admin.html" %}
 {% endblock %}
+{% block 'new' %}
+{% include "polls/add.html" %}
+{% endblock %}
 {% block 'content' %}
 {% if latest_question_list %}
 

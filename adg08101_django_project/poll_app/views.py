@@ -75,8 +75,6 @@ def add(request):
                     language=Language.objects.get(pk=request.POST['lang']),
                     extra=None)
 
-    # q.language = Language.objects.get(pk=request.POST['lang'])
-
     q.save()
 
     q.type.add(QuestionType.objects.get(pk=request.POST['type']))
