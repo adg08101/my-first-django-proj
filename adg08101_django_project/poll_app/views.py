@@ -101,7 +101,7 @@ def results(request, question_id, year, bla, theme):
 
 
 def questions_results(request):
-    question_choices_votes = QuestionChoiceVote.objects.all()
+    question_choices_votes = QuestionChoiceVote.objects.all().order_by('question')
     template = loader.get_template('polls/results.html')
     context = {
         'results': question_choices_votes,

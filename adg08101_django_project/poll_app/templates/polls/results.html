@@ -19,7 +19,7 @@ Polls details {{ question.id }}
         </thead>
         <tbody>
         {% for r in results  %}
-        <tr onclick="styled('{{ r.question.id }}')">
+        <tr v-bind:class="{ alt: even({{ r.question.id }}, 'group') }" onclick="styled('{{ r.question.id }}')">
             <td>{{ r.question.id }}</td>
             <td>{{ r.question.question_text }}</td>
             <td>{{ r.choice.choice_text }}</td>
