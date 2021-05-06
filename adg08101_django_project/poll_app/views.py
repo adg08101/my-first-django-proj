@@ -5,7 +5,8 @@ from .models import *
 from django.db.models import F
 from django.template import loader
 from django.views import defaults, generic
-import requests, datetime
+import requests, datetime, socket
+from django.views.decorators.csrf import csrf_exempt
 
 
 class LatestQuestionsGenericView(generic.ListView):
@@ -166,12 +167,22 @@ def vote(request, pk):
 
 
 def delete(request, pk):
-    try:
-        q = get_object_or_404(Question, pk=pk)
-        q.delete()
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
-    finally:
-        request.session['message'] = 'Question deleted'
-        template = loader.get_template('polls/index.html')
-        return HttpResponseRedirect(reverse('polls:index'))
+    url = 'http://127.0.0.1:8000/polls/' + str(pk) + '/do_delete'
+    response = requests.delete(
+        url=url,
+    )
+
+    request.session['message'] = 'Question deleted'
+    template = loader.get_template('polls/index.html')
+    return HttpResponseRedirect(reverse('polls:index'))
+
+
+
+@csrf_exempt
+def do_delete(request, pk):
+    if request.method == 'DELETE':
+        try:
+            q = get_object_or_404(Question, pk=pk)
+            q.delete()
+        except Question.DoesNotExist:
+            raise Http404("Question does not exist")

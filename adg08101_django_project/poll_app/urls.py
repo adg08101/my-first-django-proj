@@ -24,6 +24,7 @@ urlpatterns = [
             path('vote', views.vote, name='vote'),
             path('details', views.details, name='details'),
             path('delete', views.delete, name='delete'),
+            path('do_delete', views.do_delete, name='do_delete'),
             path('<20yy:year>/<slug:bla>/results', views.results, name='results20'),
             path('<21yy:year>/<slug:bla>/results', views.results, {'theme': 'customized'}, name='results21'),
         ]
