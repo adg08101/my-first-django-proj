@@ -1,0 +1,45 @@
+{% extends "polls/base.html" %}
+{% block 'title' %}
+Polls Main View
+{% endblock %}
+{% block 'back' %}
+{% include "polls/back.html" %}
+{% endblock %}
+{% block 'new' %}
+{% include "polls/add.html" %}
+{% endblock %}
+{% block 'results' %}
+{% include "polls/result.html" %}
+{% endblock %}
+{% block 'content' %}
+{% if latest_question_list %}
+
+<div class="datagrid">
+    <strong>Latest Questions</strong>
+    <table>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Question id</th>
+            <th>Question text</th>
+            <th>Question pub date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for question in latest_question_list %}
+        <tr v-bind:class="{ alt: even({{ forloop.counter }}) }">
+            <td>
+                {{ forloop.counter }}
+            </td>
+            <td><a href="{% url 'polls:details' question.id %}">{{ question.id }}</a></td>
+            <td><a href="{% url 'polls:question_detail' question.id %}">{{ question.question_text }}</a></td>
+            <td>{{ question.pub_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}
+{% endblock %}

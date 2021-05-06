@@ -1,4 +1,6 @@
 from django.urls import path, register_converter, re_path, include
+from .models import Question
+
 
 from . import views, yearConverter
 
@@ -13,11 +15,12 @@ app_name = 'polls'
 urlpatterns = [
     path('', views.index, name='index'),
     path('add', views.add, name='add'),
-    path('results', include(results)),
+    path('results/', include(results)),
     path('new', views.new, name='new'),
-    path('<int:question_id>/', include(
+    path('latest', views.LatestQuestionsView.as_view(message = 'HelloWorld!!!'), name='latest_questions'),
+    path('<int:pk>/', include(
         [
-            path('', views.detail, name='detail'),
+            path('detail', views.QuestionDetailView.as_view(model = Question), name='question_detail'),
             path('vote', views.vote, name='vote'),
             path('details', views.details, name='details'),
             path('delete', views.delete, name='delete'),

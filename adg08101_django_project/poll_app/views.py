@@ -4,7 +4,45 @@ from django.urls import reverse
 from .models import *
 from django.db.models import F
 from django.template import loader
+from django.views import defaults, generic
 import requests, datetime
+
+
+class LatestQuestionsGenericView(generic.ListView):
+    message = None
+
+
+class LatestQuestionsView(LatestQuestionsGenericView):
+    message = 'HolaMundo!!!'
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
+    def head(self, *args, **kwargs):
+        lastest = Question.objects.order_by('-pub_date')[:5]
+        response = HttpResponse(
+            headers={
+            'latest': lastest,
+            'message': self.message,
+        })
+        return response
+
+
+class QuestionDetailView(generic.DetailView):
+    def head(self, *args, **kwargs):
+        question = Question.objects.get(pk=self.kwargs.get('pk'))
+        response = HttpResponse(
+            headers={'question': question},
+        )
+        return response
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
+
 
 def getContext(message=None):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -25,6 +63,15 @@ def getContext(message=None):
 
 
 def index(request):
+
+    if request.method == 'HEAD':
+        lastest = Question.objects.order_by('-pub_date')[:5]
+        response = HttpResponse(
+            headers={
+            'latest': lastest,
+        })
+        return response
+
     try:
         template = loader.get_template('polls/index.html')
         context = getContext()
@@ -34,18 +81,7 @@ def index(request):
             del request.session['message']
 
 
-# Create your views here.
-def detail(request, question_id):
-    question = Question.objects.get(id=question_id)
-    template = loader.get_template('polls/detail.html')
-    context = {
-        'question': question,
-    }
-    return HttpResponse(template.render(context, request))
-
-
 def new(request):
-    # question = Question.objects.get(id=question_id)
     languages = Language.objects.all()
     types = QuestionType.objects.all()
     choices = Choice.objects.all()
@@ -58,8 +94,8 @@ def new(request):
     return HttpResponse(template.render(context, request))
 
 
-def details(request, question_id):
-    question = Question.objects.get(id=question_id)
+def details(request, pk):
+    question = Question.objects.get(id=pk)
     template = loader.get_template('polls/details.html')
     context = {
         'question': question,
@@ -71,16 +107,16 @@ def add(request):
     l = request.POST.getlist('choices[]')
 
     q = Question(question_text=request.POST['text'],
-                    pub_date=datetime.datetime.strptime(request.POST['date'], '%Y-%m-%dT%H:%M'),
-                    language=Language.objects.get(pk=request.POST['lang']),
-                    extra=None)
+                 pub_date=datetime.datetime.strptime(request.POST['date'], '%Y-%m-%dT%H:%M'),
+                 language=Language.objects.get(pk=request.POST['lang']),
+                 extra=None)
 
     q.save()
 
     q.type.add(QuestionType.objects.get(pk=request.POST['type']))
 
     for i in l:
-        q.choice.add(Choice.objects.get(pk = i))
+        q.choice.add(Choice.objects.get(pk=i))
 
     q.save()
 
@@ -89,13 +125,13 @@ def add(request):
     return HttpResponseRedirect(reverse('polls:index'))
 
 
-def results(request, question_id, year, bla, theme):
+def results(request, pk, year, bla, theme):
     if year < 2000:
         century = '20th'
     else:
         century = '21th'
 
-    response = f"You're looking at the results of question {question_id} for year {year} on {century}" \
+    response = f"You're looking at the results of question {pk} for year {year} on {century}" \
                f"century says {bla}. for {theme} theme"
     return HttpResponse(response)
 
@@ -109,10 +145,10 @@ def questions_results(request):
     return HttpResponse(template.render(context, request))
 
 
-def vote(request, question_id):
+def vote(request, pk):
     try:
         template = loader.get_template('polls/vote.html')
-        q = Question.objects.get(pk=question_id)
+        q = Question.objects.get(pk=pk)
         c = Choice.objects.get(pk=request.POST['choice'])
         rel = QuestionChoiceVote.objects.filter(question=q, choice=c)
         context = {
@@ -129,9 +165,9 @@ def vote(request, question_id):
     return HttpResponse(template.render(request=request, context=context))
 
 
-def delete(request, question_id):
+def delete(request, pk):
     try:
-        q = get_object_or_404(Question, pk=question_id)
+        q = get_object_or_404(Question, pk=pk)
         q.delete()
     except Question.DoesNotExist:
         raise Http404("Question does not exist")
