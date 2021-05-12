@@ -18,20 +18,37 @@ class LatestQuestionsView(LatestQuestionsGenericView):
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        """
+                 Return the last five published questions (not including those set to be
+                 published in the future).
+                 """
+        return Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
 
     def head(self, *args, **kwargs):
-        lastest = Question.objects.order_by('-pub_date')[:5]
+        """
+            Return the last five published questions (not including those set to be
+            published in the future).
+            """
+        lastest = Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
         response = HttpResponse(
             headers={
-            'latest': lastest,
-            'message': self.message,
-        })
+                'latest': lastest,
+                'message': self.message,
+            })
         return response
 
 
 class QuestionDetailView(generic.DetailView):
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
+
     def head(self, *args, **kwargs):
         question = Question.objects.get(pk=self.kwargs.get('pk'))
         response = HttpResponse(
@@ -42,11 +59,20 @@ class QuestionDetailView(generic.DetailView):
 
 class ResultsView(generic.DetailView):
     model = Question
+
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
+
     template_name = 'polls/results.html'
 
 
 def getContext(message=None):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    latest_question_list = Question.objects.filter(
+        pub_date__lte=timezone.now()
+    ).order_by('-pub_date')[:5]
     questions = Question.objects.all()
     questions_with_choices = []
 
@@ -64,13 +90,14 @@ def getContext(message=None):
 
 
 def index(request):
-
     if request.method == 'HEAD':
-        lastest = Question.objects.order_by('-pub_date')[:5]
+        lastest = Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
         response = HttpResponse(
             headers={
-            'latest': lastest,
-        })
+                'latest': lastest,
+            })
         return response
 
     try:
@@ -175,7 +202,6 @@ def delete(request, pk):
     request.session['message'] = 'Question deleted'
     template = loader.get_template('polls/index.html')
     return HttpResponseRedirect(reverse('polls:index'))
-
 
 
 @csrf_exempt
