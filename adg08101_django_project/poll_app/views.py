@@ -141,7 +141,7 @@ def add(request):
 
     q.save()
 
-    q.type.add(QuestionType.objects.get(pk=request.POST['type']))
+    # q.type.add(QuestionType.objects.get(pk=request.POST['type']))
 
     for i in l:
         q.choice.add(Choice.objects.get(pk=i))
