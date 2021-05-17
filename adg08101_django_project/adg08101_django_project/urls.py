@@ -19,8 +19,9 @@ from django.urls import include, path
 urlpatterns = [
     path('', include('main_app.urls')),
     path('admin/', admin.site.urls),
-    path('polls/', include('poll_app.urls')),
+    # path('polls/', include('django_polls.polls.urls')),
+    path('polls/', include('polls.urls')),
     path('manage/', include('admin_app.urls')),
-    path('author-polls/', include(('poll_app.urls', 'author-polls'), namespace='author-polls')),
-    path('publisher-polls/', include(('poll_app.urls', 'publisher-polls'), namespace='publisher-polls')),
+    # path('author-polls/', include(('polls.urls', 'author-polls'), namespace='author-polls')),
+    # path('publisher-polls/', include(('polls.urls', 'publisher-polls'), namespace='publisher-polls')),
 ]
